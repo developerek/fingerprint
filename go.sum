@@ -1,0 +1,8 @@
+github.com/developerek/fingerprint v0.0.0-20170828065331-76672000b83e h1:lowgMXCqwT4tTueMOy3jezAJ5EbF+lNSUmTU9S6H59g=
+github.com/developerek/fingerprint v0.0.0-20170828065331-76672000b83e/go.mod h1:zYuzFQTXsKd6Uscp7JQHZGqAzrTPQBmQ9vzZ5w8OyWs=
+github.com/gordonklaus/portaudio v0.0.0-20221027163845-7c3b689db3cc h1:yYLpN7bJxKYILKnk20oczGQOQd2h3/7z7/cxdD9Se/I=
+github.com/gordonklaus/portaudio v0.0.0-20221027163845-7c3b689db3cc/go.mod h1:WY8R6YKlI2ZI3UyzFk7P6yGSuS+hFwNtEzrexRyD7Es=
+github.com/mjibson/go-dsp v0.0.0-20180508042940-11479a337f12 h1:dd7vnTDfjtwCETZDrRe+GPYNLA1jBtbZeyfyE8eZCyk=
+github.com/mjibson/go-dsp v0.0.0-20180508042940-11479a337f12/go.mod h1:i/KKcxEWEO8Yyl11DYafRPKOPVYTrhxiTRigjtEEXZU=
+github.com/snuffpuppet/spectre v0.0.0-20170828065331-76672000b83e h1:F8a0nYW0+o0h1Sp6nKL1Tib8ckqrZ56TSa+NNBbDTe0=
+github.com/snuffpuppet/spectre v0.0.0-20170828065331-76672000b83e/go.mod h1:cYUpVctWMCQopunXHioWh+MTFYCMEtNQUvSy560WK4Y=

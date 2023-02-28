@@ -8,19 +8,23 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"github.com/snuffpuppet/spectre/fingerprint"
-	"github.com/snuffpuppet/spectre/pcm"
-	//"github.com/snuffpuppet/spectre/audiomatcher"
+
+	"github.com/developerek/fingerprint/fingerprint"
+	"github.com/developerek/fingerprint/pcm"
+
+	//"github.com/developerek/fingerprint/audiomatcher"
 	"bufio"
-	"github.com/snuffpuppet/spectre/analysis"
-	"github.com/snuffpuppet/spectre/audiomatcher"
+
+	"github.com/developerek/fingerprint/analysis"
+	"github.com/developerek/fingerprint/audiomatcher"
 )
 
 const (
-	_ = iota
-	SA_PWELCH = iota
+	_          = iota
+	SA_PWELCH  = iota
 	SA_BESPOKE = iota
 )
+
 /* - these with -bespoke using NFFT=512 (256 unique buckets) work best so far
 // With LFC = 1000.0
 //      UFC = 2000.0
@@ -32,15 +36,15 @@ const BLOCK_SIZE  = 2048
 */
 
 const SAMPLE_RATE = 11025
-const BLOCK_SIZE  = 2048
+const BLOCK_SIZE = 2048
 
 const BLOCKS_PER_SECOND = SAMPLE_RATE / BLOCK_SIZE
 
-//const REQUIRED_CANDIDATES = 4 	// required number of frequency candidates for a fingerprint entry
-const LOWER_FREQ_CUTOFF = 1000.0	// Lowest frequency acceptable for matching
-const UPPER_FREQ_CUTOFF = 2000.0	// Highest frequency acceptable for matching
+// const REQUIRED_CANDIDATES = 4 	// required number of frequency candidates for a fingerprint entry
+const LOWER_FREQ_CUTOFF = 1000.0 // Lowest frequency acceptable for matching
+const UPPER_FREQ_CUTOFF = 2000.0 // Highest frequency acceptable for matching
 
-const TIME_DELTA_THRESHOLD = 0.5	// required minimum time diff between freq matches to be considered a hit
+const TIME_DELTA_THRESHOLD = 0.5 // required minimum time diff between freq matches to be considered a hit
 
 const FILE_SILENCE_THRESHOLD = 30.0
 const MIC_SILENCE_THRESHOLD = 30.0
@@ -69,7 +73,6 @@ type TimeIdFLoat64Slicer interface {
 	asFloat64() []float64
 }
 
-
 func printStatus(fp Fingerprinter, frame IdTimestamper, verbose bool) {
 	if verbose {
 		header := fmt.Sprintf("[%4d:%6.2f]", frame.BlockId(), frame.Timestamp())
@@ -87,7 +90,7 @@ type PcmReader interface {
 	Read() (*pcm.Frame, error)
 }
 
-func getFingerprint(analyser analysis.SpectralAnalyser, samples []float64, silenceThreshold float64) (Fingerprinter) {
+func getFingerprint(analyser analysis.SpectralAnalyser, samples []float64, silenceThreshold float64) Fingerprinter {
 	//s := ""
 
 	spectra := analyser(samples, SAMPLE_RATE)
@@ -107,7 +110,7 @@ func getFingerprint(analyser analysis.SpectralAnalyser, samples []float64, silen
 
 	//fp := fingerprint.NewChromaprint(Pxx, freqs)
 	fp := fingerprint.NewChromaprint(spectra)
-	
+
 	if fp == nil {
 		return nil
 	}
@@ -115,13 +118,12 @@ func getFingerprint(analyser analysis.SpectralAnalyser, samples []float64, silen
 	return fp
 }
 
-
-func loadStream(filename string, stream PcmReader, matches audiomatcher.Matches, analyser analysis.SpectralAnalyser, optVerbose bool) (audiomatcher.Matches, error){
+func loadStream(filename string, stream PcmReader, matches audiomatcher.Matches, analyser analysis.SpectralAnalyser, optVerbose bool) (audiomatcher.Matches, error) {
 	clashCount, fpCount := 0, 0
 	for {
 		frame, err := stream.Read()
-		if (err != nil) {
-			if (err == io.EOF || err == io.ErrUnexpectedEOF) {
+		if err != nil {
+			if err == io.EOF || err == io.ErrUnexpectedEOF {
 				break
 			}
 			return matches, err
@@ -152,7 +154,7 @@ func loadFiles(filenames []string, analyser analysis.SpectralAnalyser, optVerbos
 	for _, filename := range filenames {
 		fmt.Printf("Processing fingerprints for %s...\n", filename)
 		stream, err := pcm.NewFileStream(filename, SAMPLE_RATE, BLOCK_SIZE)
-		if (err != nil) {
+		if err != nil {
 			return nil, err
 		}
 
@@ -169,7 +171,7 @@ func listen(audioMappings audiomatcher.Matches, analyser analysis.SpectralAnalys
 	signal.Notify(sig, os.Interrupt, os.Kill)
 
 	stream, err := pcm.NewMicStream(SAMPLE_RATE, BLOCK_SIZE)
-	if (err != nil) {
+	if err != nil {
 		return err
 	}
 
@@ -196,7 +198,7 @@ func listen(audioMappings audiomatcher.Matches, analyser analysis.SpectralAnalys
 			matcher.Register(fp, frame.Timestamp())
 
 			// Check every second to see if they are certain enough to be a match
-			if frame.BlockId() % BLOCKS_PER_SECOND == 0 {
+			if frame.BlockId()%BLOCKS_PER_SECOND == 0 {
 				hits := matcher.GetHits(TIME_DELTA_THRESHOLD)
 				if len(hits) > 0 {
 					fmt.Println(hits)
@@ -234,7 +236,7 @@ func record(outfile string) error {
 	w := bufio.NewWriter(fo)
 
 	in, err := pcm.NewMicStream(SAMPLE_RATE, BLOCK_SIZE)
-	if (err != nil) {
+	if err != nil {
 		return err
 	}
 
@@ -268,7 +270,6 @@ func dumpBlock(frame *pcm.Frame) {
 	fmt.Printf("%s\n%v\n", header, frame.Data())
 }
 
-
 func dumpData(filenames []string) {
 	for _, filename := range filenames {
 
@@ -276,12 +277,12 @@ func dumpData(filenames []string) {
 
 		fmt.Printf("Dumping data for %s...\n", filename)
 
-		if (err != nil) {
+		if err != nil {
 			return
 		}
 		for {
 			frame, err := stream.Read()
-			if (err != nil) {
+			if err != nil {
 				if err == io.EOF || err == io.ErrUnexpectedEOF {
 					// EOF is ok, just break & go to next file
 					break
@@ -292,7 +293,6 @@ func dumpData(filenames []string) {
 		}
 	}
 }
-
 
 func main() {
 	var optListen, optVerbose, optDump, optRecord bool
@@ -320,7 +320,7 @@ func main() {
 
 	}
 
-	if (len(flag.Args()) == 0 && !optRecord) {
+	if len(flag.Args()) == 0 && !optRecord {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}

@@ -1,7 +1,7 @@
 package buffer_test
 
 import (
-	"github.com/snuffpuppet/spectre/pcm"
+	"github.com/developerek/fingerprint/pcm"
 	"reflect"
 	"testing"
 )

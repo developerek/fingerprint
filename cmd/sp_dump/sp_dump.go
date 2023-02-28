@@ -1,16 +1,16 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"flag"
-	"github.com/snuffpuppet/spectre/spectral"
-	"os"
-	"github.com/snuffpuppet/spectre/pcm"
-	"github.com/snuffpuppet/spectre/fingerprint"
+	"fmt"
 	"io"
-)
+	"log"
+	"os"
 
+	"github.com/developerek/fingerprint/fingerprint"
+	"github.com/developerek/fingerprint/pcm"
+	"github.com/developerek/fingerprint/spectral"
+)
 
 func printSpectra(f *pcm.Frame, s fmt.Stringer, verbose bool) {
 	if !verbose {
@@ -44,7 +44,7 @@ func dumpFiles(filenames []string, analyser spectral.Analyser, optVerbose bool) 
 	for _, filename := range filenames {
 		fmt.Printf("Dumping %s...\n", filename)
 		stream, err := pcm.NewFileStream(filename, fingerprint.SAMPLE_RATE, fingerprint.BLOCK_SIZE)
-		if (err != nil) {
+		if err != nil {
 			return err
 		}
 
@@ -56,14 +56,14 @@ func dumpFiles(filenames []string, analyser spectral.Analyser, optVerbose bool) 
 	return nil
 }
 
-func dumpStream(filename string, stream pcm.Reader, analyser spectral.Analyser, optVerbose bool) (error) {
+func dumpStream(filename string, stream pcm.Reader, analyser spectral.Analyser, optVerbose bool) error {
 	fnum := 0
 	duration := 5
 
 	for {
 		frame, err := stream.Read()
-		if (err != nil) {
-			if (err == io.EOF || err == io.ErrUnexpectedEOF) {
+		if err != nil {
+			if err == io.EOF || err == io.ErrUnexpectedEOF {
 				break
 			}
 			return err
@@ -76,14 +76,13 @@ func dumpStream(filename string, stream pcm.Reader, analyser spectral.Analyser, 
 
 		dumpBands(frame, spectra, optVerbose)
 
-		if fnum >= fingerprint.BLOCKS_PER_SECOND * duration {
+		if fnum >= fingerprint.BLOCKS_PER_SECOND*duration {
 			break
 		}
 	}
 
 	return nil
 }
-
 
 func main() {
 	var optAnalyser string
@@ -108,7 +107,7 @@ func main() {
 
 	}
 
-	if (len(flag.Args()) == 0) {
+	if len(flag.Args()) == 0 {
 		log.Println("Error: No audio files found to match against")
 		flag.PrintDefaults()
 		os.Exit(1)

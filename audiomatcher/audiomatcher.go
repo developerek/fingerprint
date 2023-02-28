@@ -1,10 +1,11 @@
 package audiomatcher
 
 import (
-	//"github.com/snuffpuppet/spectre/fingerprint"
+	//"github.com/developerek/fingerprint/fingerprint"
 	"fmt"
 	"math"
-	"github.com/snuffpuppet/spectre/lookup"
+
+	"github.com/developerek/fingerprint/lookup"
 )
 
 /*
@@ -20,18 +21,17 @@ type location struct {
 }
 
 type audioHit struct {
-	filename string
-	hitCount int
+	filename      string
+	hitCount      int
 	totalHitCount int
 }
 
 type audioHits []audioHit
 
-
 func (a audioHits) String() (s string) {
 	s = ""
 	for _, v := range a {
-		pc := int(float64(v.hitCount) / float64(v.totalHitCount) * 100.0 + 0.5)
+		pc := int(float64(v.hitCount)/float64(v.totalHitCount)*100.0 + 0.5)
 		s += fmt.Sprintf("%3d/%3d (%3d%%) - %s\n", v.hitCount, v.totalHitCount, pc, v.filename)
 	}
 
@@ -44,10 +44,10 @@ type AudioMatcher struct {
 	FrequencyHits  map[string][]location
 }
 
-func New(mappings lookup.Matches, timeThreshold float64) (*AudioMatcher) {
+func New(mappings lookup.Matches, timeThreshold float64) *AudioMatcher {
 	am := AudioMatcher{
-		timeThreshold: timeThreshold,
-		FrequencyHits: make(map[string][]location),
+		timeThreshold:  timeThreshold,
+		FrequencyHits:  make(map[string][]location),
 		FingerprintLib: mappings,
 	}
 	return &am
@@ -71,11 +71,11 @@ func (matcher *AudioMatcher) Register(key []byte, ts float64) {
 
 func (m *AudioMatcher) Stats() (s string) {
 	hits, misses, totalHits, totalMisses := m.hitStats()
-	header := fmt.Sprintf("Totals - hits: %d / osync: %d / total: %d", totalHits, totalMisses, totalHits + totalMisses)
+	header := fmt.Sprintf("Totals - hits: %d / osync: %d / total: %d", totalHits, totalMisses, totalHits+totalMisses)
 	body := ""
 	for k, v := range hits {
 		mv := misses[k]
-		body = fmt.Sprintf("%s\n%s: %d/%d/%d", body, k, v, mv, v + mv)
+		body = fmt.Sprintf("%s\n%s: %d/%d/%d", body, k, v, mv, v+mv)
 	}
 
 	s = fmt.Sprintf("%s%s", header, body)
@@ -86,16 +86,16 @@ func (m *AudioMatcher) Stats() (s string) {
 func (m *AudioMatcher) hitStats() (hits, misses map[string]int, totalHits, totalMisses int) {
 	hits = make(map[string]int)
 	misses = make(map[string]int)
-	totalHits, totalMisses= 0,0
+	totalHits, totalMisses = 0, 0
 
 	// Check through our frequency hit list to see if the time deltas match those of the file
 	for filename, ts := range m.FrequencyHits {
-		if len(ts) >1 {
+		if len(ts) > 1 {
 			for i := 1; i < len(ts); i++ {
 				songTimeDelta := ts[i].song - ts[i-1].song
 				micTimeDelta := ts[i].mic - ts[i-1].mic
 
-				if  math.Abs(songTimeDelta - micTimeDelta) < m.timeThreshold {
+				if math.Abs(songTimeDelta-micTimeDelta) < m.timeThreshold {
 					hits[filename]++
 					totalHits++
 					//fmt.Printf("Time Delta match for %s (%d/%d)\n", filename, hits[filename], totalHits)
@@ -136,4 +136,3 @@ func (matcher *AudioMatcher) GetHits() (orderedHits audioHits) {
 
 	return
 }
-

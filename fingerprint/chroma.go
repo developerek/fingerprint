@@ -1,44 +1,46 @@
 package fingerprint
 
 import (
-	"fmt"
-	"log"
-	"io"
 	"crypto/sha1"
+	"fmt"
+	"io"
+	"log"
 	"math"
-	"github.com/snuffpuppet/spectre/spectral"
+
+	"github.com/developerek/fingerprint/spectral"
 )
 
 // Chroma based Fingerprint info on a block of audio data
 type Chromaprint struct {
-	Key           []byte
+	Key []byte
 	//Timestamp     float64
 	//Candidates    candidates
 	Transcription Transcription
 }
 
 // To be a Fingerprinter, we must satisfy the interface
-func (c Chromaprint) Fingerprint() []byte  { return c.Key }
+func (c Chromaprint) Fingerprint() []byte { return c.Key }
+
 //func (c Chromaprint) Timestamp()   float64 { return c.Timestamp }
 
 // To anable debugging we satisfy the Stringer interface
-func (c Chromaprint) String()    string  { return c.Transcription.String() }
+func (c Chromaprint) String() string { return c.Transcription.String() }
 
 // For the Chroma identification method of matching:
 // ref: http://musicweb.ucsd.edu/~sdubnov/CATbox/Reader/ThumbnailingMM05.pdf
 const (
-	A_NOTE = iota
-	AS_NOTE = iota
-	B_NOTE = iota
-	C_NOTE = iota
-	CS_NOTE = iota
-	D_NOTE = iota
-	DS_NOTE = iota
-	E_NOTE = iota
-	F_NOTE = iota
-	FS_NOTE = iota
-	G_NOTE = iota
-	GS_NOTE = iota
+	A_NOTE   = iota
+	AS_NOTE  = iota
+	B_NOTE   = iota
+	C_NOTE   = iota
+	CS_NOTE  = iota
+	D_NOTE   = iota
+	DS_NOTE  = iota
+	E_NOTE   = iota
+	F_NOTE   = iota
+	FS_NOTE  = iota
+	G_NOTE   = iota
+	GS_NOTE  = iota
 	MAX_NOTE = iota
 )
 
@@ -83,14 +85,14 @@ const LOGNA = 0.05776226504666185940
 
 // calculate the number of note semitones that the frequency is away from the 440Hz base tone
 // Using the Equal Tempered Scale with A4 = 440Hz
-//ref: http://www.phy.mtu.edu/~suits/notefreqs.html
+// ref: http://www.phy.mtu.edu/~suits/notefreqs.html
 func noteSteps(freq float64) float64 {
-	return math.Log(freq/440.0)/ LOGNA
+	return math.Log(freq/440.0) / LOGNA
 }
 
 // find out to which note this frequency corresponds. Returns a number between 0 and 11
 func freqNote(freq float64) int {
-	n := int(noteSteps(freq) + 0.5) % MAX_NOTE
+	n := int(noteSteps(freq)+0.5) % MAX_NOTE
 	if n < 0 {
 		n += MAX_NOTE
 	}
@@ -141,8 +143,8 @@ func transcribe(s spectral.Spectra) (t Transcription) {
 			t[n].Freq = fuzzyFreq(v)
 			t[n].Strength = s.Pxx[i]
 			chromaCount++
-		//} else {
-				//fmt.Printf("*** Rejected: %f(%.2f)\n", fuzzyFreq(v), Pxx[i])
+			//} else {
+			//fmt.Printf("*** Rejected: %f(%.2f)\n", fuzzyFreq(v), Pxx[i])
 		}
 
 	}
@@ -174,7 +176,7 @@ func audioKey(t Transcription) (key []byte) {
 			}
 		}
 		for i, v := range t {
-			key[i] = byte(int(v.Strength/maxPxx * 8.0 + 0.5))
+			key[i] = byte(int(v.Strength/maxPxx*8.0 + 0.5))
 		}
 	} else {
 
@@ -189,7 +191,7 @@ func audioKey(t Transcription) (key []byte) {
 	return
 }
 
-func NewChromaprint(s spectral.Spectra) (*Chromaprint) {
+func NewChromaprint(s spectral.Spectra) *Chromaprint {
 	transcription := transcribe(s)
 	//log.Printf("NewChromaPrint1: %s\n", transcription)
 
@@ -201,7 +203,7 @@ func NewChromaprint(s spectral.Spectra) (*Chromaprint) {
 	}
 
 	cp := Chromaprint{
-		Key: key,
+		Key:           key,
 		Transcription: transcription,
 	}
 

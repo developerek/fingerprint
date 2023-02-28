@@ -1,8 +1,9 @@
 package fingerprint
 
 import (
-	"github.com/snuffpuppet/spectre/spectral"
 	"fmt"
+
+	"github.com/developerek/fingerprint/spectral"
 )
 
 type band struct {
@@ -16,7 +17,7 @@ type bands struct {
 
 func (b bands) band(f float64) (x int) {
 	for i, v := range b.bands {
-		if f >= float64(v.start) * b.fstep && f < float64(v.end) * b.fstep {
+		if f >= float64(v.start)*b.fstep && f < float64(v.end)*b.fstep {
 			return i
 		}
 	}
@@ -25,13 +26,13 @@ func (b bands) band(f float64) (x int) {
 }
 
 func newBands(fs int) bands {
-	b := []band {
-		band{ 30,  40  },
-		band{ 40,  80  },
-		band{ 80,  120 },
-		band{ 120, 180 },
-		band{ 180, 300 },
-		band{ 300, 512 },
+	b := []band{
+		band{30, 40},
+		band{40, 80},
+		band{80, 120},
+		band{120, 180},
+		band{180, 300},
+		band{300, 512},
 	}
 
 	freqStep := float64(fs) / 2 / 512
@@ -52,8 +53,8 @@ func NewBandPeaks(fs int) BandPeaks {
 	fb := newBands(fs)
 	return BandPeaks{
 		fbands: fb,
-		freq: make([]float64, len(fb.bands)),
-		pxx:  make([]float64, len(fb.bands)),
+		freq:   make([]float64, len(fb.bands)),
+		pxx:    make([]float64, len(fb.bands)),
 	}
 }
 
@@ -91,7 +92,7 @@ func (bp BandPeaks) Fingerprint() []float64 {
 	return bp.freq
 }
 
-func NewBandedprint(fs int, spectra spectral.Spectra) (*BandPeaks) {
+func NewBandedprint(fs int, spectra spectral.Spectra) *BandPeaks {
 	bp := NewBandPeaks(fs)
 	for i := range spectra.Freqs {
 		bp.add(spectra.Freqs[i], spectra.Pxx[i])
@@ -100,15 +101,12 @@ func NewBandedprint(fs int, spectra spectral.Spectra) (*BandPeaks) {
 	return &bp
 }
 
-
-
-
 /*
 import (
 	"fmt"
 	"crypto/sha1"
 	"io"
-	"github.com/snuffpuppet/spectre/spectral"
+	"github.com/developerek/fingerprint/spectral"
 	_ "log"
 )
 

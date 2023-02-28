@@ -1,12 +1,14 @@
 package pcm
 
 import (
-	"os/exec"
-	"github.com/mjibson/go-dsp/wav"
-	"io"
 	"fmt"
+	"io"
+	"os/exec"
+
+	"github.com/mjibson/go-dsp/wav"
+
 	//"log"
-	"github.com/snuffpuppet/spectre/ffmpeg"
+	"github.com/developerek/fingerprint/ffmpeg"
 )
 
 /*
@@ -17,9 +19,9 @@ import (
  */
 
 type FileStream struct {
-	cmd	   *exec.Cmd
-	in	   io.ReadCloser
-	audio	   *wav.Wav
+	cmd        *exec.Cmd
+	in         io.ReadCloser
+	audio      *wav.Wav
 	blockSize  int
 	sampleRate int
 	empty      bool
@@ -52,15 +54,14 @@ func (f *FileStream) Start() (err error) {
 	return nil
 }
 
-
 func NewFileStream(filename string, sampleRate, blockSize int) (*FileStream, error) {
 	cmd, err := ffmpeg.Cmd(filename, ffmpeg.CONTAINER_WAV, ffmpeg.FMT_INT16, sampleRate)
-	if (err != nil) {
+	if err != nil {
 		return nil, err
 	}
 
 	in, err := ffmpeg.StartStream(cmd)
-	if (err != nil) {
+	if err != nil {
 		return nil, err
 	}
 
@@ -72,18 +73,16 @@ func NewFileStream(filename string, sampleRate, blockSize int) (*FileStream, err
 		return nil, fmt.Errorf("Wav file has different sample rate (%d) to requested rate (%d)", audio.SampleRate, sampleRate)
 	}
 
-
 	stream := FileStream{
 		blockSize:  blockSize,
 		sampleRate: sampleRate,
 		audio:      audio,
 		cmd:        cmd,
 		in:         in,
-		empty:	    true,
+		empty:      true,
 		blockId:    0,
 	}
 
 	return &stream, nil
 
 }
-

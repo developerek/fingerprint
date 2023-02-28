@@ -2,16 +2,17 @@ package main
 
 import (
 	"flag"
-	"github.com/snuffpuppet/spectre/spectral"
+	"fmt"
+	"io"
 	"log"
 	"os"
-	"fmt"
-	"github.com/snuffpuppet/spectre/pcm"
-	"github.com/snuffpuppet/spectre/audiomatcher"
 	"os/signal"
-	"io"
-	"github.com/snuffpuppet/spectre/fingerprint"
-	"github.com/snuffpuppet/spectre/lookup"
+
+	"github.com/developerek/fingerprint/audiomatcher"
+	"github.com/developerek/fingerprint/fingerprint"
+	"github.com/developerek/fingerprint/lookup"
+	"github.com/developerek/fingerprint/pcm"
+	"github.com/developerek/fingerprint/spectral"
 )
 
 func loadFiles(filenames []string, analyser spectral.Analyser, optVerbose bool) (matches lookup.Matches, err error) {
@@ -21,7 +22,7 @@ func loadFiles(filenames []string, analyser spectral.Analyser, optVerbose bool) 
 	for _, filename := range filenames {
 		fmt.Printf("Processing fingerprints for %s...\n", filename)
 		stream, err := pcm.NewFileStream(filename, fingerprint.SAMPLE_RATE, fingerprint.BLOCK_SIZE)
-		if (err != nil) {
+		if err != nil {
 			return nil, err
 		}
 
@@ -61,11 +62,11 @@ func listen(stream pcm.StartReader, matcher *audiomatcher.AudioMatcher, analyser
 			matcher.Register(fingerprint.Hash(fp.Fingerprint()), frame.Timestamp())
 
 			// Check every second to see if they are certain enough to be a match
-			if frame.BlockId() % fingerprint.BLOCKS_PER_SECOND == 0 {
+			if frame.BlockId()%fingerprint.BLOCKS_PER_SECOND == 0 {
 				log.Printf("(%.2f) %s\n", frame.Timestamp(), matcher.Stats())
 				//hits := matcher.GetHits()
 				//if len(hits) > 0 {
-					//fmt.Println(hits)
+				//fmt.Println(hits)
 				//}
 			}
 		}
@@ -79,12 +80,12 @@ func listen(stream pcm.StartReader, matcher *audiomatcher.AudioMatcher, analyser
 
 }
 
-func loadStream(filename string, stream pcm.Reader, matches lookup.Matches, analyser spectral.Analyser, optVerbose bool) (lookup.Matches, error){
+func loadStream(filename string, stream pcm.Reader, matches lookup.Matches, analyser spectral.Analyser, optVerbose bool) (lookup.Matches, error) {
 	clashCount, fpCount := 0, 0
 	for {
 		frame, err := stream.Read()
-		if (err != nil) {
-			if (err == io.EOF || err == io.ErrUnexpectedEOF) {
+		if err != nil {
+			if err == io.EOF || err == io.ErrUnexpectedEOF {
 				break
 			}
 			return matches, err
@@ -96,11 +97,11 @@ func loadStream(filename string, stream pcm.Reader, matches lookup.Matches, anal
 
 		if fp != nil {
 			fpCount++
-/*			if _, ok := matches[string(fp.Fingerprint())]; ok {
-				clashCount++
-			}
-			matches[string(fp.Fingerprint())] = audiomatcher.Match{filename, frame.Timestamp()}
-*/
+			/*			if _, ok := matches[string(fp.Fingerprint())]; ok {
+							clashCount++
+						}
+						matches[string(fp.Fingerprint())] = audiomatcher.Match{filename, frame.Timestamp()}
+			*/
 			key := fingerprint.Hash(fp.Fingerprint())
 			if _, ok := matches.Lookup(key); ok {
 				clashCount++
@@ -149,7 +150,7 @@ func main() {
 
 	}
 
-	if (len(flag.Args()) == 0) {
+	if len(flag.Args()) == 0 {
 		log.Println("Error: No audio files found to match against")
 		flag.PrintDefaults()
 		os.Exit(1)
