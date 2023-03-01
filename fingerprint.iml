@@ -6,6 +6,6 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="jdk" jdkName="Go 1.8.1" jdkType="Go SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="GOPATH &lt;spectre&gt;" level="project" />
+    <orderEntry type="library" name="GOPATH &lt;fingerprint&gt;" level="project" />
   </component>
 </module>
