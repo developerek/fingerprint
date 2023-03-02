@@ -5,10 +5,10 @@ import "github.com/gordonklaus/portaudio"
 type MicStream struct {
 	blockSize  int
 	sampleRate int
-	mic	   *portaudio.Stream
-	buf	   []int16
-	blockId	   int
-	empty	   bool
+	mic        *portaudio.Stream
+	buf        []int16
+	blockId    int
+	empty      bool
 }
 
 func (m *MicStream) Close() (err error) {
@@ -57,4 +57,3 @@ func NewMicStream(sampleRate, blockSize int) (*MicStream, error) {
 
 	return &stream, nil
 }
-

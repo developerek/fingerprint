@@ -10,16 +10,16 @@ type StartReader interface {
 }
 
 type Frame struct {
-	data 		[]int16
-	timestamp	float64
-	blockId		int
+	data      []int16
+	timestamp float64
+	blockId   int
 }
 
 func NewFrame(data []int16, blockId, sampleRate int) Frame {
-	return Frame {
-		data: data,
-		blockId: blockId,
-		timestamp: float64(blockId * len(data)) / float64(sampleRate),
+	return Frame{
+		data:      data,
+		blockId:   blockId,
+		timestamp: float64(blockId*len(data)) / float64(sampleRate),
 	}
 }
 

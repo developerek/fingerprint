@@ -3,9 +3,10 @@ package spectral
 import (
 	"math"
 	"math/cmplx"
+
 	"github.com/mjibson/go-dsp/fft"
-	"github.com/mjibson/go-dsp/window"
 	dsp "github.com/mjibson/go-dsp/spectral"
+	"github.com/mjibson/go-dsp/window"
 )
 
 type Analyser func(samples []float64, fs, nfft, noverlap int, dbScaling bool) Spectra
@@ -48,7 +49,7 @@ func Simple(samples []float64, sampleRate int) (Pxx, freqs []float64) {
 
 	fftResults := fft.FFT(complexSamples)
 
-	l2 := int(float64(len(fftResults)) / 2.0 + 0.5)  // round to nearest integer
+	l2 := int(float64(len(fftResults))/2.0 + 0.5) // round to nearest integer
 	fftRelevent := fftResults[1:l2]
 
 	freqs = make([]float64, len(fftRelevent))
@@ -72,14 +73,14 @@ func Amplitude(samples []float64, fs, nfft, noverlap int, dbScaling bool) Spectr
 
 	//const NFFT = 512
 	//const NOVERLAP = 384
-	const NORMALISING_ENABLED = false 	// disable normalising for the moment as it seems to hide strong signals
+	const NORMALISING_ENABLED = false // disable normalising for the moment as it seems to hide strong signals
 	//const DB_SCALING = true			// Scale the amplitude output to dB
 
 	wf := window.Hann
 
 	segs := dsp.Segment(samples, nfft, noverlap)
 
-	lp := nfft / 2 + 1
+	lp := nfft/2 + 1
 
 	Pxx := make([]float64, lp)
 
@@ -123,5 +124,3 @@ func Amplitude(samples []float64, fs, nfft, noverlap int, dbScaling bool) Spectr
 
 	return NewSpectra(freqs, Pxx)
 }
-
-

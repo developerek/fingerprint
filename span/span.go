@@ -2,7 +2,6 @@ package span
 
 import (
 	"fmt"
-	"math"
 )
 
 // Calculate whether a Range between two float64s overlap and by how much
@@ -34,7 +33,9 @@ func (p Span) Overlap(q Span) float64 {
 
 // return the lowest of an arbitrary number of float64s
 func min(nums ...float64) (x float64) {
-	x := -math.MaxFloat64
+
+	var y float64 = 0 - (0x1p1023 * (1 + (1 - 0x1p-52)))
+	x = y
 	for _, num := range nums {
 		if num < x {
 			x = num

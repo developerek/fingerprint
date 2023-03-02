@@ -1,11 +1,11 @@
 package ffmpeg
 
 import (
-	"os/exec"
 	"fmt"
-	"strconv"
 	"io"
 	"log"
+	"os/exec"
+	"strconv"
 )
 
 const (
@@ -21,9 +21,9 @@ func Cmd(filename, containerType, pcmDataType string, sampleRate int) (*exec.Cmd
 	// pcmDataType describes the internal format of the data we want e.g. float32 / signed int 16 etc
 	// codec indicates (to ffmpeg) a raw format and which (raw) codec to use
 
-	codec := ""    // indicates (to ffmpeg) how to encode the pcm data
-	format := ""   // indicates (to ffmpeg) how to format the file (wav or raw - with raw format 's16le' etc)
-	ffmpegDataType := ""  // internal data type for ffmpeg to use for PCM data
+	codec := ""          // indicates (to ffmpeg) how to encode the pcm data
+	format := ""         // indicates (to ffmpeg) how to format the file (wav or raw - with raw format 's16le' etc)
+	ffmpegDataType := "" // internal data type for ffmpeg to use for PCM data
 
 	switch pcmDataType {
 	case FMT_INT16:
@@ -61,7 +61,7 @@ func Cmd(filename, containerType, pcmDataType string, sampleRate int) (*exec.Cmd
 
 	args = append(args, inputArgs...)
 	args = append(args, formatArgs...)
-	if containerType != "wav" {  // for wav containers, use default (int16) codec -otherwise trouble
+	if containerType != "wav" { // for wav containers, use default (int16) codec -otherwise trouble
 		args = append(args, codecArgs...)
 	}
 	args = append(args, bitRateArgs...)
@@ -87,4 +87,3 @@ func StartStream(cmd *exec.Cmd) (io.ReadCloser, error) {
 
 	return audio, nil
 }
-

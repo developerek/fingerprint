@@ -6,28 +6,29 @@ import (
 )
 
 type Spectra struct {
-	Pxx	[]float64
-	Freqs	[]float64
+	Pxx   []float64
+	Freqs []float64
 }
 
 // scan the spectral analysis for local maxima defined by:
 // if m is a local maxima (at position i in both Freqs and Pxx)then
-//   Pxx[i-1], Pxx[i+1] < Pxx[i] and
-//   Pxx[i-2] < Pxx[i-1] and
-//   Pxx[i+2] < Pxx[i+1]
+//
+//	Pxx[i-1], Pxx[i+1] < Pxx[i] and
+//	Pxx[i-2] < Pxx[i-1] and
+//	Pxx[i+2] < Pxx[i+1]
 func (s Spectra) Maxima() Spectra {
 	freqs := make([]float64, 0, len(s.Freqs))
 	pxx := make([]float64, 0, len(s.Pxx))
 
 	if len(s.Freqs) < 5 {
-		return Spectra{ Freqs: freqs, Pxx: pxx }
+		return Spectra{Freqs: freqs, Pxx: pxx}
 	}
 
-	for i := 2; i < len(s.Pxx) - 2; i++ {
+	for i := 2; i < len(s.Pxx)-2; i++ {
 		if lmax(s.Pxx[i-2], s.Pxx[i-1], s.Pxx[i], s.Pxx[i+1], s.Pxx[i+2]) {
 			freqs = append(freqs, s.Freqs[i])
 			pxx = append(pxx, s.Pxx[i])
-			i += 2				// we can ignore the next 3 since they cannot be a maxima
+			i += 2 // we can ignore the next 3 since they cannot be a maxima
 		}
 	}
 
@@ -66,7 +67,7 @@ func (s Spectra) Filter(f func(freq, power float64) bool) Spectra {
 }
 
 // filter out all the signals with a strength lower than the mean strength of all the samples
-func (s Spectra) HighPass() (Spectra) {
+func (s Spectra) HighPass() Spectra {
 	nPxx := make([]float64, 0, len(s.Pxx))
 	nfreqs := make([]float64, 0, len(s.Freqs))
 
@@ -96,7 +97,7 @@ func (s Spectra) meanStrength() (m float64) {
 
 func NewSpectra(freqs, pxx []float64) Spectra {
 	return Spectra{
-		Pxx: pxx,
+		Pxx:   pxx,
 		Freqs: freqs,
 	}
 }
@@ -106,14 +107,14 @@ func Maxima(s Spectra) Spectra {
 	pxx := make([]float64, 0, len(s.Pxx))
 
 	if len(s.Freqs) < 5 {
-		return Spectra{ Freqs: freqs, Pxx: pxx }
+		return Spectra{Freqs: freqs, Pxx: pxx}
 	}
 
-	for i := 2; i < len(s.Pxx) - 2; i++ {
+	for i := 2; i < len(s.Pxx)-2; i++ {
 		if lmax(s.Pxx[i-2], s.Pxx[i-1], s.Pxx[i], s.Pxx[i+1], s.Pxx[i+2]) {
 			freqs = append(freqs, s.Freqs[i])
 			pxx = append(pxx, s.Pxx[i])
-			i += 2				// we can ignore the next 3 since they cannot be a maxima
+			i += 2 // we can ignore the next 3 since they cannot be a maxima
 		}
 	}
 
@@ -135,14 +136,19 @@ func (x Spectra) String() (s string) {
 }
 
 type ByPxx Spectra
-func (a ByPxx) Len() int           { return len(a.Freqs) }
-func (a ByPxx) Swap(i, j int)      { a.Freqs[i], a.Freqs[j] = a.Freqs[j], a.Freqs[i]
-	a.Pxx[i], a.Pxx[j] = a.Pxx[j], a.Pxx[i] }
+
+func (a ByPxx) Len() int { return len(a.Freqs) }
+func (a ByPxx) Swap(i, j int) {
+	a.Freqs[i], a.Freqs[j] = a.Freqs[j], a.Freqs[i]
+	a.Pxx[i], a.Pxx[j] = a.Pxx[j], a.Pxx[i]
+}
 func (a ByPxx) Less(i, j int) bool { return a.Pxx[i] < a.Pxx[j] }
 
 type ByFreq Spectra
-func (a ByFreq) Len() int           { return len(a.Freqs) }
-func (a ByFreq) Swap(i, j int)      { a.Freqs[i], a.Freqs[j] = a.Freqs[j], a.Freqs[i]
-	a.Pxx[i], a.Pxx[j] = a.Pxx[j], a.Pxx[i] }
-func (a ByFreq) Less(i, j int) bool { return a.Freqs[i] < a.Freqs[j] }
 
+func (a ByFreq) Len() int { return len(a.Freqs) }
+func (a ByFreq) Swap(i, j int) {
+	a.Freqs[i], a.Freqs[j] = a.Freqs[j], a.Freqs[i]
+	a.Pxx[i], a.Pxx[j] = a.Pxx[j], a.Pxx[i]
+}
+func (a ByFreq) Less(i, j int) bool { return a.Freqs[i] < a.Freqs[j] }

@@ -1,11 +1,6 @@
-github.com/developerek/fingerprint v0.0.0-20170828065331-76672000b83e h1:lowgMXCqwT4tTueMOy3jezAJ5EbF+lNSUmTU9S6H59g=
-github.com/developerek/fingerprint v0.0.0-20170828065331-76672000b83e/go.mod h1:zYuzFQTXsKd6Uscp7JQHZGqAzrTPQBmQ9vzZ5w8OyWs=
+github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/genshinsim/gcsim v1.8.6 h1:80W8xRK83hvJ2LYy44CcsZTs13i1wFglm/NMR4zpPjE=
 github.com/genshinsim/gcsim v1.8.6/go.mod h1:OjGan4zzVLKN/ta1hOlMcP2d5kQuVSYJrS4Wb5RtiA0=
-github.com/go-fingerprint/fingerprint v0.0.0-20140803133125-29397256b7ff h1:MVMRAz9+9uI8+nzBPHILUVLNzH+jaKKmGmEf5GrgNsM=
-github.com/go-fingerprint/fingerprint v0.0.0-20140803133125-29397256b7ff/go.mod h1:p+iFTUBRUOKBOZtWQCQAZHhLI7fC5bMdiDc5B4PPBU0=
-github.com/go-fingerprint/gochroma v0.0.0-20211004000611-a294aa5ccab6 h1:ofe4/jf63isEPwFgoy81WKWzuA3gfegrthdJXgdXKJI=
-github.com/go-fingerprint/gochroma v0.0.0-20211004000611-a294aa5ccab6/go.mod h1:zsgLdL2ov2nW56GWAEjcSp75I6ZIZjxnToJGZ/ouYwQ=
 github.com/gordonklaus/portaudio v0.0.0-20221027163845-7c3b689db3cc h1:yYLpN7bJxKYILKnk20oczGQOQd2h3/7z7/cxdD9Se/I=
 github.com/gordonklaus/portaudio v0.0.0-20221027163845-7c3b689db3cc/go.mod h1:WY8R6YKlI2ZI3UyzFk7P6yGSuS+hFwNtEzrexRyD7Es=
 github.com/josharian/intern v1.0.0 h1:vlS4z54oSdjm0bgjRigI+G1HpF+tI+9rE5LLzOg8HmY=
@@ -16,8 +11,6 @@ github.com/mjibson/go-dsp v0.0.0-20180508042940-11479a337f12 h1:dd7vnTDfjtwCETZD
 github.com/mjibson/go-dsp v0.0.0-20180508042940-11479a337f12/go.mod h1:i/KKcxEWEO8Yyl11DYafRPKOPVYTrhxiTRigjtEEXZU=
 github.com/philhofer/fwd v1.1.1 h1:GdGcTjf5RNAxwS4QLsiMzJYj5KEvPJD3Abr261yRQXQ=
 github.com/philhofer/fwd v1.1.1/go.mod h1:gk3iGcWd9+svBvR0sR+KPcfE+RNWozjowpeBVG3ZVNU=
-github.com/snuffpuppet/spectre v0.0.0-20170828065331-76672000b83e h1:F8a0nYW0+o0h1Sp6nKL1Tib8ckqrZ56TSa+NNBbDTe0=
-github.com/snuffpuppet/spectre v0.0.0-20170828065331-76672000b83e/go.mod h1:cYUpVctWMCQopunXHioWh+MTFYCMEtNQUvSy560WK4Y=
 github.com/tinylib/msgp v1.1.6 h1:i+SbKraHhnrf9M5MYmvQhFnbLhAXSDWF8WWsuyRdocw=
 github.com/tinylib/msgp v1.1.6/go.mod h1:75BAfg2hauQhs3qedfdDZmWAPcFMAvJE5b9rGOMufyw=
 github.com/yuin/goldmark v1.2.1/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
